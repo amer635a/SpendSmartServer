@@ -56,104 +56,11 @@ export const getAvailableDates = async (req, res) => {
         });
     }
 };
-export const deleteExpense = async (req, res) => {
-    try {
-        const { expenseId } = req.params;
-        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
-
-        // Find the user by ID
-        const user = await User.findById(userId);
-
-        // Check if the user was found
-        if (!user) {
-            return res.json({
-                error: "User not found",
-            });
-        }
-
-        // Iterate through years and months to find and remove the expense
-        user.years.forEach((year) => {
-            year.months.forEach((month) => {
-                month.expenses = month.expenses.filter((expense) => expense._id.toString() !== expenseId);
-            });
-        });
-
-        // Save the user document after removing the expense
-        await user.save();
-
-        return res.json({
-            message: "Expense deleted successfully",
-        });
-    } catch (error) {
-        console.error("Error deleting expense:", error);
-        return res.status(500).json({
-            error: "Internal Server Error",
-        });
-    }
-};
-export const updateBudget = async (req, res) => {
-    
-    try {
-        const { expenseId } = req.params;
-        const { newBudget, yearNumber, monthNumber } = req.body;
-        console.log("newBudget",newBudget)
-
-        if (!newBudget || !yearNumber || !monthNumber) {
-            return res.json({
-                error: "New budget value, yearNumber, and monthNumber are required",
-            });
-        }
-
-        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
-        const user = await User.findById(userId);
-
-        if (!user) {
-            return res.json({
-                error: "User not found",
-            });
-        }
-
-        // Find the expense in the user's data
-        const expense = user.years.reduce((foundExpense, year) => {
-            const month = year.months.find((m) =>
-                m.expenses.some((e) => e._id.toString() === expenseId)
-            );
-            if (month) {
-                foundExpense = month.expenses.find(
-                    (e) => e._id.toString() === expenseId
-                );
-            }
-            return foundExpense;
-        }, null);
-
-        if (!expense) {
-            return res.json({
-                error: "Expense not found",
-            });
-        }
-
-        // Update the budget value
-        expense.budget = newBudget;
-
-        // Save the user document with the updated budget
-        await user.save();
-
-        return res.json({
-            success: true,
-            message: "Budget updated successfully",
-            expense,
-        });
-    } catch (error) {
-        console.error("Error updating budget:", error);
-        return res.status(500).json({
-            success: false,
-            error: "Internal Server Error",
-        });
-    }
-};
 
 
 
+
+/* Goal */
 export const deleteGoal = async (req, res) => {
     try {
         
@@ -186,7 +93,6 @@ export const deleteGoal = async (req, res) => {
         });
     }
 };
-
 export const getGoals=async (req,res)=>{
 
     const user = await User.findById('64d373c5bf764a582023e5f7')
@@ -246,10 +152,9 @@ export const insertGoals = async (req, res) => {
         });
     } 
 };
-
+///////////////
 
 export const getYear=async (req,res)=>{
-
     const user = await User.findById('64d373c5bf764a582023e5f7')
     const years=user.years
     return res.json({
@@ -258,35 +163,40 @@ export const getYear=async (req,res)=>{
     });
 }
 
+/* Incomes  */
 export const getIncomes = async (req, res) => {
  
     try {
         const { user_id, yearNumber, monthNumber } = req.body;
-        console.log(yearNumber)
+        console.log("getIncomes --> user_id "+user_id +" yearNumber "+yearNumber +" monthNumber "+monthNumber)
         const user = await User.findById(user_id);
         if (!user) {
             return res.json({
                 error: "User not found",
             });
         }
+        console.log("user id exist")
 
-        const year = user.years.find((y) => y.yearNumber === yearNumber);
+        const year = user.years.find((y) => y.yearNumber == yearNumber);
         if (!year) {
             return res.json({
                 error: "Year not found",
             });
         }
-
+        console.log("year is exist")
+        console.log(year.months)
         const month = year.months.find((m) => m.MonthNumber === monthNumber);
-        
         if (!month) {
+            console.error("month not exist")
             return res.json({
                 error: "Month not found",
             });
         }
-        
+        console.log("month is exist")
+        console.log(month)
         const incomes = month.incomes;
-
+        console.log("return incomes"+incomes)
+        console.log(incomes)
         return res.json({
             message: "Incomes returned successfully",
             incomes,
@@ -298,7 +208,6 @@ export const getIncomes = async (req, res) => {
         });
     }
 };
-
 export const insertIncomes = async (req, res) => {
     try {
         const { user_id, yearNumber, monthNumber, name, amount,tracked, percentage } = req.body;
@@ -355,7 +264,69 @@ export const insertIncomes = async (req, res) => {
         });
     }
 };
+export const updateAmount = async (req, res) => {
+    console.log("updateAmount -->")
+    try {
+        const { incomeId } = req.params;
+        const { newAmount, yearNumber, monthNumber } = req.body;
+        console.log("incomeId ",incomeId," newAmount",newAmount)
 
+        if (!newAmount || !yearNumber || !monthNumber) {
+            return res.json({
+                error: "New Amount value, yearNumber, and monthNumber are required",
+            });
+        }
+
+        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.json({
+                error: "User not found",
+            });
+        }
+        console.log("user exist ")
+        // Find the income in the user's data
+        const income = user.years.reduce((foundIncome, year) => {
+            const month = year.months.find((m) =>
+                m.incomes.some((e) => e._id.toString() === incomeId)
+            );
+            if (month) {
+                foundIncome = month.incomes.find(
+                    (e) => e._id.toString() === incomeId
+                );
+            }
+            return foundIncome;
+        }, null);
+
+        if (!income) {
+            return res.json({
+                error: "income not found",
+            });
+        }
+
+        // Update the Amount value
+        income.amount = newAmount;
+
+        // Save the user document with the updated Amount
+        await user.save();
+
+        return res.json({
+            success: true,
+            message: "Amount updated successfully",
+            income,
+        });
+    } catch (error) {
+        console.error("Error updating Amount:", error);
+        return res.status(500).json({
+            success: false,
+            error: "Internal Server Error",
+        });
+    }
+};
+///////////////
+
+/*  Expenses  */
 export const getExpenses = async (req, res) => {
     
     try {
@@ -367,6 +338,7 @@ export const getExpenses = async (req, res) => {
                 error: "User not found",
             });
         }
+        console.log("user id exist")
 
         const year = user.years.find((y) => y.yearNumber == yearNumber);
         if (!year) {
@@ -374,14 +346,16 @@ export const getExpenses = async (req, res) => {
                 error: "Year not found",
             });
         }
-
+        console.log("year is exist")
+        console.log(year.months)
         const month = year.months.find((m) => m.MonthNumber === monthNumber);
         if (!month) {
+            console.error("month not exist")
             return res.json({
                 error: "Month not found",
             });
         }
-
+        console.log("month is exist")
         const expenses = month.expenses;
         console.log("return expenses"+expenses)
         return res.json({
@@ -395,7 +369,6 @@ export const getExpenses = async (req, res) => {
         });
     }
 };
-
 export const insertExpenses = async (req, res) => {
     try {
         const { user_id, name, tracked, budget, yearNumber, monthNumber } = req.body;
@@ -456,7 +429,105 @@ export const insertExpenses = async (req, res) => {
         });
     }
 };
+export const deleteExpense = async (req, res) => {
+    try {
+        const { expenseId } = req.params;
+        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
 
+        // Find the user by ID
+        const user = await User.findById(userId);
+
+        // Check if the user was found
+        if (!user) {
+            return res.json({
+                error: "User not found",
+            });
+        }
+
+        // Iterate through years and months to find and remove the expense
+        user.years.forEach((year) => {
+            year.months.forEach((month) => {
+                month.expenses = month.expenses.filter((expense) => expense._id.toString() !== expenseId);
+            });
+        });
+
+        // Save the user document after removing the expense
+        await user.save();
+
+        return res.json({
+            message: "Expense deleted successfully",
+        });
+    } catch (error) {
+        console.error("Error deleting expense:", error);
+        return res.status(500).json({
+            error: "Internal Server Error",
+        });
+    }
+};
+export const updateBudget = async (req, res) => {
+    
+    try {
+        const { expenseId } = req.params;
+        const { newBudget, yearNumber, monthNumber } = req.body;
+        console.log("expenseId ",expenseId," newBudget",newBudget)
+
+        if (!newBudget || !yearNumber || !monthNumber) {
+            return res.json({
+                error: "New budget value, yearNumber, and monthNumber are required",
+            });
+        }
+
+        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.json({
+                error: "User not found",
+            });
+        }
+
+        // Find the expense in the user's data
+        const expense = user.years.reduce((foundExpense, year) => {
+            const month = year.months.find((m) =>
+                m.expenses.some((e) => e._id.toString() === expenseId)
+            );
+            if (month) {
+                foundExpense = month.expenses.find(
+                    (e) => e._id.toString() === expenseId
+                );
+            }
+            return foundExpense;
+        }, null);
+
+        if (!expense) {
+            return res.json({
+                error: "Expense not found",
+            });
+        }
+
+        // Update the budget value
+        expense.budget = newBudget;
+
+        // Save the user document with the updated budget
+        await user.save();
+
+        return res.json({
+            success: true,
+            message: "Budget updated successfully",
+            expense,
+        });
+    } catch (error) {
+        console.error("Error updating budget:", error);
+        return res.status(500).json({
+            success: false,
+            error: "Internal Server Error",
+        });
+    }
+};
+///////////////
+
+
+/*   signup / signin  */
 export const signup = async (req, res) => {
     console.log("Signup Hit");
     try {
@@ -542,3 +613,4 @@ export const signin = async (req, res) => {
         return res.status(400).send("Error. Try again.");
     }
 };
+///////////////
