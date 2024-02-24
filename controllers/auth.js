@@ -324,6 +324,41 @@ export const updateAmount = async (req, res) => {
         });
     }
 };
+export const deleteIncome = async (req, res) => {
+    try {
+        const { incomeId } = req.params;
+        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
+
+        // Find the user by ID
+        const user = await User.findById(userId);
+
+        // Check if the user was found
+        if (!user) {
+            return res.json({
+                error: "User not found",
+            });
+        }
+
+        // Iterate through years and months to find and remove the Income
+        user.years.forEach((year) => {
+            year.months.forEach((month) => {
+                month.incomes = month.incomes.filter((income) => income._id.toString() !== incomeId);
+            });
+        });
+
+        // Save the user document after removing the Income
+        await user.save();
+
+        return res.json({
+            message: "Income deleted successfully",
+        });
+    } catch (error) {
+        console.error("Error deleting Income:", error);
+        return res.status(500).json({
+            error: "Internal Server Error",
+        });
+    }
+};
 ///////////////
 
 /*  Expenses  */
