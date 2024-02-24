@@ -209,6 +209,7 @@ export const getIncomes = async (req, res) => {
     }
 };
 export const insertIncomes = async (req, res) => {
+    console.log("insertIncomes- >")
     try {
         const { user_id, yearNumber, monthNumber, name, amount,tracked, percentage } = req.body;
 
@@ -256,7 +257,11 @@ export const insertIncomes = async (req, res) => {
         }
        
         month.incomes.push(income);
-        await user.save();    
+        await user.save();  
+        return res.json({
+            message: "income added successfully",
+            income,
+        });  
     } catch (err) {
         console.log(err);
         return res.status(500).json({
@@ -328,6 +333,7 @@ export const deleteIncome = async (req, res) => {
     try {
         const { incomeId } = req.params;
         const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
+        console.log("deleteIncome --> incomeId ",incomeId)
 
         // Find the user by ID
         const user = await User.findById(userId);
@@ -338,6 +344,7 @@ export const deleteIncome = async (req, res) => {
                 error: "User not found",
             });
         }
+        console.log("user exist ")
 
         // Iterate through years and months to find and remove the Income
         user.years.forEach((year) => {
@@ -436,7 +443,10 @@ export const insertExpenses = async (req, res) => {
             year.months.push(month);
             user.years.push(year);
             await user.save();
-            return
+            return res.json({
+                message: "Expense added successfully",
+                expense,
+            });
         }
         
         let month = year.months.find((m) => m.MonthNumber == monthNumber);
@@ -446,7 +456,10 @@ export const insertExpenses = async (req, res) => {
             month = { MonthNumber: monthNumber, expenses: [expense] };
             year.months.push(month);
             await user.save();
-            return
+            return res.json({
+                message: "Expense added successfully",
+                expense,
+            });
         }
 
         month.expenses.push(expense);
