@@ -23,9 +23,12 @@ const userSchema = new Schema(
         },
        years: [Years.schema],
        goals: [Goals.schema],
-
-      
         savings: {
+            type: String,
+            trim: true,
+            required: true,
+        },
+        investAmount: {
             type: String,
             trim: true,
             required: true,

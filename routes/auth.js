@@ -1,7 +1,7 @@
 import express from "express";
 
 import {getExpenses, signin,signup, insertExpenses,getIncomes,insertIncomes,getGoals,insertGoals,
-   getSavings,deleteGoal,updateBudget,deleteExpense,getAvailableDates,updateAmount,deleteIncome} from "../controllers/auth.js";
+   getSavings,getInvestAmount,updateInvestAmount,deleteGoal,updateBudget,deleteExpense,getAvailableDates,updateAmount,deleteIncome} from "../controllers/auth.js";
 const router = express.Router();
 
 
@@ -13,8 +13,10 @@ router.get("/", (req, res) => {
 router.get("/getAvailableDates", getAvailableDates);
 
 
-
 router.get("/getSavings",getSavings);
+
+router.get("/getInvestAmount",getInvestAmount);
+router.put("/updateInvestAmount", updateInvestAmount); 
 
 router.get("/getGoals",getGoals);
 router.post("/insertGoals", insertGoals);

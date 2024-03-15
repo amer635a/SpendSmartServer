@@ -9,8 +9,36 @@ import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
  
 dotenv.config();
-export const getSavings=async (req,res)=>{
 
+
+
+export const updateInvestAmount = async (req, res) => {
+    console.log("updateInvestAmount->")
+    const { newInvestAmount } = req.body; // Assuming newInvestAmount is provided in the request body
+
+    try {
+        // Find the user by ID and update their investAmount
+        const user = await User.findByIdAndUpdate('64d373c5bf764a582023e5f7', { investAmount: newInvestAmount }, { new: true });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.json({
+            message: "Investment amount updated successfully",
+            user: {
+                id: user._id,
+                investAmount: user.investAmount
+            }
+        });
+    } catch (error) {
+        console.error("Error updating investment amount:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+export const getSavings=async (req,res)=>{
+    console.log("getSavings -> ")
     const user = await User.findById('64d373c5bf764a582023e5f7')
     const savings=user.savings
     return res.json({
@@ -18,6 +46,20 @@ export const getSavings=async (req,res)=>{
         savings,
     });
 }
+
+export const getInvestAmount=async (req,res)=>{
+    console.log("getInvestAmount -> ")
+    const user = await User.findById('64d373c5bf764a582023e5f7')
+    console.log("found user")
+    const investAmount=user.investAmount
+    console.log("investAmount "+{investAmount})
+    return res.json({
+        message: "investAmount returned successfully",
+        investAmount,
+    });
+}
+
+
 export const getAvailableDates = async (req, res) => {
     try {
         const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
