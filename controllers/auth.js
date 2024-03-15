@@ -136,9 +136,10 @@ export const deleteGoal = async (req, res) => {
     }
 };
 export const getGoals=async (req,res)=>{
-
+    console.log("getGoals -> ")
     const user = await User.findById('64d373c5bf764a582023e5f7')
     const goals=user.goals
+    console.log(goals)
     return res.json({
         message: "Goals returned successfully",
         goals,
@@ -194,6 +195,33 @@ export const insertGoals = async (req, res) => {
         });
     } 
 };
+export const updateGoals = async (req, res) => {
+    console.log("updateGoals->")
+    
+    const { newGoals } = req.body; // Assuming newInvestAmount is provided in the request body
+
+    try {
+        // Find the user by ID and update their investAmount
+        const user = await User.findByIdAndUpdate('64d373c5bf764a582023e5f7', { goals: newGoals }, { new: true });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.json({
+            message: "Investment amount updated successfully",
+            user: {
+                id: user._id,
+                goals: user.goals
+            }
+        });
+    } catch (error) {
+        console.error("Error updating investment amount:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+        
+};
+
 ///////////////
 
 export const getYear=async (req,res)=>{

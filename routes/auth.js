@@ -1,7 +1,7 @@
 import express from "express";
 
 import {getExpenses, signin,signup, insertExpenses,getIncomes,insertIncomes,getGoals,insertGoals,
-   getSavings,getInvestAmount,updateInvestAmount,deleteGoal,updateBudget,deleteExpense,getAvailableDates,updateAmount,deleteIncome} from "../controllers/auth.js";
+   getSavings,getInvestAmount,updateInvestAmount,deleteGoal,updateGoals,updateBudget,deleteExpense,getAvailableDates,updateAmount,deleteIncome} from "../controllers/auth.js";
 const router = express.Router();
 
 
@@ -20,7 +20,8 @@ router.put("/updateInvestAmount", updateInvestAmount);
 
 router.get("/getGoals",getGoals);
 router.post("/insertGoals", insertGoals);
-router.delete("/deleteGoal/:goalId", deleteGoal); 
+router.delete("/deleteGoal/:goalId", deleteGoal);
+router.put("/updateGoals", updateGoals); 
 
 router.post("/getIncomes",getIncomes);
 router.post("/insertIncomes", insertIncomes);
