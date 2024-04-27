@@ -18,7 +18,7 @@ export const updateInvestAmount = async (req, res) => {
 
     try {
         // Find the user by ID and update their investAmount
-        const user = await User.findByIdAndUpdate('64d373c5bf764a582023e5f7', { investAmount: newInvestAmount }, { new: true });
+        const user = await User.findByIdAndUpdate('645006320188d6681b4db8f4', { investAmount: newInvestAmount }, { new: true });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -39,7 +39,7 @@ export const updateInvestAmount = async (req, res) => {
 
 export const getSavings=async (req,res)=>{
     console.log("getSavings -> ")
-    const user = await User.findById('64d373c5bf764a582023e5f7')
+    const user = await User.findById('645006320188d6681b4db8f4')
     const savings=user.savings
     return res.json({
         message: "Savings returned successfully",
@@ -47,9 +47,36 @@ export const getSavings=async (req,res)=>{
     });
 }
 
+
+export const updateSavings=async (req,res)=>{
+    console.log("upSavingsAmount->")
+    const newSavingsAmount  = req.body.savings; // Assuming newInvestAmount is provided in the request body
+    console.log("newSavingsAmount ",newSavingsAmount)
+    try {
+        // Find the user by ID and update their investAmount
+        const user = await User.findByIdAndUpdate('645006320188d6681b4db8f4', { savings: newSavingsAmount }, { new: true });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.json({
+            message: "Investment amount updated successfully",
+            user: {
+                id: user._id,
+                savings: user.savings
+            }
+        });
+    } catch (error) {
+        console.error("Error updating investment amount:", error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+
 export const getInvestAmount=async (req,res)=>{
     console.log("getInvestAmount -> ")
-    const user = await User.findById('64d373c5bf764a582023e5f7')
+    const user = await User.findById('645006320188d6681b4db8f4')
     console.log("found user")
     const investAmount=user.investAmount
     console.log("investAmount "+{investAmount})
@@ -62,7 +89,7 @@ export const getInvestAmount=async (req,res)=>{
 
 export const getAvailableDates = async (req, res) => {
     try {
-        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
+        const userId = '645006320188d6681b4db8f4'; // Replace with your actual user ID
 
         // Find the user by ID
         const user = await User.findById(userId);
@@ -106,7 +133,7 @@ export const getAvailableDates = async (req, res) => {
 export const deleteGoal = async (req, res) => {
     try {
         
-        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
+        const userId = '645006320188d6681b4db8f4'; // Replace with your actual user ID
         const { goalId } = req.params;
 
         // Find the user by ID
@@ -136,14 +163,23 @@ export const deleteGoal = async (req, res) => {
     }
 };
 export const getGoals=async (req,res)=>{
-    console.log("getGoals -> ")
-    const user = await User.findById('64d373c5bf764a582023e5f7')
-    const goals=user.goals
-    console.log(goals)
+    console.log("getGoals -> ");
+try {
+    const user = await User.findById('645006320188d6681b4db8f4');
+    if (!user) {
+        return res.status(404).json({ message: "User not found" });
+    }
+    const goals = user.goals;
+    console.log(goals);
     return res.json({
         message: "Goals returned successfully",
         goals,
     });
+} catch (error) {
+    console.error("Error fetching goals:", error);
+    return res.status(500).json({ message: "Internal server error" });
+}
+
 }
 export const insertGoals = async (req, res) => {
 
@@ -169,7 +205,7 @@ export const insertGoals = async (req, res) => {
             endDate,
            
         })
-        const user = await User.findById('64d373c5bf764a582023e5f7');
+        const user = await User.findById('645006320188d6681b4db8f4');
         // Check if the user was found
         if (!user) {
             return res.json({
@@ -202,7 +238,7 @@ export const updateGoals = async (req, res) => {
 
     try {
         // Find the user by ID and update their investAmount
-        const user = await User.findByIdAndUpdate('64d373c5bf764a582023e5f7', { goals: newGoals }, { new: true });
+        const user = await User.findByIdAndUpdate('645006320188d6681b4db8f4', { goals: newGoals }, { new: true });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -225,7 +261,7 @@ export const updateGoals = async (req, res) => {
 ///////////////
 
 export const getYear=async (req,res)=>{
-    const user = await User.findById('64d373c5bf764a582023e5f7')
+    const user = await User.findById('645006320188d6681b4db8f4')
     const years=user.years
     return res.json({
         message: "Incomes returned successfully",
@@ -352,7 +388,7 @@ export const updateAmount = async (req, res) => {
             });
         }
 
-        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
+        const userId = '645006320188d6681b4db8f4'; // Replace with your actual user ID
         const user = await User.findById(userId);
 
         if (!user) {
@@ -402,7 +438,7 @@ export const updateAmount = async (req, res) => {
 export const deleteIncome = async (req, res) => {
     try {
         const { incomeId } = req.params;
-        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
+        const userId = '645006320188d6681b4db8f4'; // Replace with your actual user ID
         console.log("deleteIncome --> incomeId ",incomeId)
 
         // Find the user by ID
@@ -550,7 +586,7 @@ export const insertExpenses = async (req, res) => {
 export const deleteExpense = async (req, res) => {
     try {
         const { expenseId } = req.params;
-        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
+        const userId = '645006320188d6681b4db8f4'; // Replace with your actual user ID
 
         // Find the user by ID
         const user = await User.findById(userId);
@@ -595,7 +631,7 @@ export const updateBudget = async (req, res) => {
             });
         }
 
-        const userId = '64d373c5bf764a582023e5f7'; // Replace with your actual user ID
+        const userId = '645006320188d6681b4db8f4'; // Replace with your actual user ID
         const user = await User.findById(userId);
 
         if (!user) {
