@@ -7,9 +7,10 @@ import dotenv from "dotenv"
 const m = morgan
 const app = express();
 dotenv.config()
-
-mongoose.connect(process.env.DATABASE).then(() => console.log("DB connected")).catch((err) => console.log("DB CONNECTION ERROR:", err));
-console.log("asdasd")
+console.log("start")
+const Url_DB="mongodb+srv://WaelProject:Wael123@cluster0.ekp8izv.mongodb.net/?retryWrites=true&w=majority"
+mongoose.connect(Url_DB).then(() => console.log("DB connected")).catch((err) => console.log("DB CONNECTION ERROR:", err));
+ 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
